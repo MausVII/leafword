@@ -1,0 +1,51 @@
+:root{
+    --highlight:  #d49c6b;
+    --base:  #f6fafb;
+    --background: #252b31;
+}
+
+@font-face {
+    font-family: 'Kosugi';
+    src: url("./resources/fonts/Kosugi-Regular.ttf");
+}
+
+* {
+    font-family: 'Kosugi', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+#root {
+    background-color: var(--background);
+    width: 100%;
+    height: 100%;
+}
+
+.app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.type-2-btn {
+    background-color: var(--base);
+    padding: 8px;
+    margin: 4px;
+    font-size: 1.4rem;
+    border-bottom: 3px solid var(--highlight);
+    transition: 0.3s border-width ease;
+}
+
+.type-2-btn:hover, .type-2-btn:focus {
+    cursor: pointer;
+    border: 3px solid var(--highlight);
+}

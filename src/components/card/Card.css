@@ -1,0 +1,34 @@
+.card-container {
+    width: 90%;
+    min-height: 600px;
+    position: relative;
+    background-color: var(--base);
+    overflow: hidden;
+}
+
+.card-front, .card-back {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: inherit;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    transition: 0.3s all ease-out;
+}
+
+.card-front {
+    left: -100%;
+}
+
+.card-front.active {
+    left: 0;
+}
+
+.card-back {
+    left: 100%;
+}
+
+.card-back.active {
+    left: 0;
+}

@@ -1,0 +1,39 @@
+.header {
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+}
+
+.app-title {
+    margin: 4px;
+}
+
+.nav-bar {
+    border-bottom: 1px solid var(--highlight);
+}
+
+.nav-btns {
+    width: 80px;
+    padding: 4px 6px;
+    margin-inline: 10px; 
+    font-size: 1rem;
+    border-bottom: 10px solid var(--background);
+    transition: 0.3s all ease;
+}
+
+.nav-btns:hover, .nav-btns:focus, .nav-btns.active {
+    outline: none;
+    cursor: pointer;
+    background-color: var(--highlight);
+    border-bottom: 10px solid var(--highlight);
+}
+
+.optional-nav {
+    display: none;
+}
+
+@media (min-width: 600px) {
+    .optional-nav {
+        display: inline-block;
+    }
+}
