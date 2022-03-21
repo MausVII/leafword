@@ -37,15 +37,18 @@ html, body {
 }
 
 .type-2-btn {
+    justify-self: end;
+    margin: 2rem;
+    margin-top: auto;
+    padding: 1rem;
     background-color: var(--base);
-    padding: 8px;
-    margin: 4px;
     font-size: 1.4rem;
     border-bottom: 3px solid var(--highlight);
     transition: 0.3s border-width ease;
 }
 
 .type-2-btn:hover, .type-2-btn:focus {
+    
     cursor: pointer;
     border: 3px solid var(--highlight);
 }

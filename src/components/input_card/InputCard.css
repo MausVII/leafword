@@ -1,0 +1,19 @@
+.hiragana {
+    width: 100%;
+
+    margin: 1rem;
+}
+
+.pitch-btns {
+    background-color: var(--base);
+    font-size: 2rem;
+}
+
+.pitch-btns:hover {
+    cursor: pointer;
+}
+
+.priority {
+    display: flex;
+    justify-content: space-between;
+}
