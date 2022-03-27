@@ -82,9 +82,11 @@ const InputCard = () => {
     }
 
     const sendCard = async (data: CardData) => {
-        window.api.sendCard('add-card', data)
+        window.api.sendCard('add-card', {...data, 
+            createdAt: Date.now(), 
+            updatedAt: Date.now()})
     }
-
+    
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         sendCard(CardData)

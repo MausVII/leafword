@@ -5,11 +5,12 @@ import DataStore from 'nedb'
 const db = new DataStore({filename: './src/data/db'})
 db.loadDatabase((error) => {
     if (error) {
-        console.error("Could not load database")
+        console.error(`Could not load database ${error}`)
     } else {
         console.log("Loaded database")
     }
 })
+
 contextBridge.exposeInMainWorld(
     'api',
     {
@@ -24,7 +25,7 @@ contextBridge.exposeInMainWorld(
                 if (error) {
                     console.error(`Error inserting card: ${error}`)
                 } else {
-                    console.log(`Inserted: ${doc}`)
+                    console.log(`Inserted: ${JSON.stringify(doc, null, 2)}`)
                 }
             })
         }

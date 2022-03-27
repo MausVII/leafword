@@ -11,6 +11,8 @@ export type CardData = {
     eng_def: string,
     jap_def: string,
     notes: string,
+    createdAt?: number,
+    updatedAt?: number,
 }
 
 // Rising, High, Falling, Low
