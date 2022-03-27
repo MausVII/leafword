@@ -67,7 +67,7 @@ const InputCard = () => {
     const getNextVariant = () => {
         let tempKanji = CardData.kanji
         setCardData({...CardData,
-            kanji: CardData.variants.shift(),
+            kanji: CardData.variants.length == 0 ? '' : CardData.variants.shift(),
             variants: tempKanji == '' ? [...CardData.variants] : [...CardData.variants, tempKanji],
         })
     }
@@ -82,9 +82,14 @@ const InputCard = () => {
     }
 
     const sendCard = async (data: CardData) => {
+        console.log(`${[...CardData.kanji.split(''), ...CardData.variants.flat().toString().split('')]}`)
         window.api.sendCard('add-card', {...data, 
             createdAt: Date.now(), 
-            updatedAt: Date.now()})
+            updatedAt: Date.now(),
+            components: [...CardData.kanji.split(''), ...CardData.variants.flat().toString().split('')]
+                        .filter(c => c.match(/[\u4e00-\u9faf]/) != null)
+                        .filter((c, idx, self) => self.indexOf(c) === idx)
+        })
     }
     
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
