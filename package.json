@@ -53,7 +53,15 @@
                 {
                   "html": "./src/index.html",
                   "js": "./src/renderer.ts",
-                  "name": "main_window"
+                  "name": "main_window",
+                  "preload": {
+                    "js": "./src/preload.ts"
+                  }
+                },
+                {
+                  "html": "./src/index.html",
+                  "js": "./src/db.ts",
+                  "name": "db_window"
                 }
               ]
             }
@@ -69,6 +77,7 @@
     "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.61",
+    "@types/nedb": "^1.8.12",
     "@types/react": "^17.0.41",
     "@types/react-dom": "^17.0.14",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
@@ -90,6 +99,7 @@
     "@mui/icons-material": "^5.5.1",
     "@mui/material": "^5.5.1",
     "electron-squirrel-startup": "^1.0.0",
+    "nedb": "^1.8.0",
     "react-router-dom": "^6.2.1"
   }
 }

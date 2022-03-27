@@ -48,10 +48,12 @@ const Card = () => {
 
     const formatTags = (tags: string[]) => tags.reduce( (acc, curr) => acc + ` [${curr}]`, '')
 
+    
+
     const CardBack = () => {
         return (
             <>
-            <form id='word-info' onSubmit={(event) => event.preventDefault()}>
+            <form id='word-info' onSubmit={(e => e.preventDefault())}>
                 <div className='kanji-variants'>
                     <TextField id='kanji-variants' variant='standard' fullWidth
                     value={CardData.kanji}

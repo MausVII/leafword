@@ -3,7 +3,7 @@ import { CardData } from '../../models/models'
 import InputAdornment from '@mui/material/InputAdornment'
 import SvgIcon from '@mui/material/SvgIcon'
 import TextField from '@mui/material/TextField'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import { priorityIcons, StyledRating, StyledToggleButton } from '../../models/mui_styles'
 import { Pitch } from '../../models/models'
@@ -21,15 +21,15 @@ const PriorityIconContainer = (props: IconContainerProps) => {
 
 const InputCard = () => {
     const [CardData, setCardData] = useState<CardData>({
-        kanji: '',
+        kanji: '収益',
         variants: [],
-        components: [],
-        tags: [],
-        pitch: [],
-        priority: 0,
-        hiragana: 'いちのせ',
-        eng_def: "",
-        jap_def: "",
+        components: ['収', '益'],
+        tags: ['名'],
+        pitch: ['l', 'r', 'h', 'h', 'h'],
+        priority: 3,
+        hiragana: 'しゅうえき',
+        eng_def: "Earning, revenue",
+        jap_def: "事業などによって利益を得ること。また、その利益。",
         notes: '',
     })
     const [lang, setLang] = useState<'eng' | 'jap'>('eng')
@@ -67,24 +67,28 @@ const InputCard = () => {
     const getNextVariant = () => {
         let tempKanji = CardData.kanji
         setCardData({...CardData,
-            kanji: CardData.variants.length == 0 ? '' : CardData.variants.shift(),
+            kanji: CardData.variants.shift(),
             variants: tempKanji == '' ? [...CardData.variants] : [...CardData.variants, tempKanji],
         })
     }
 
-    const getPrevVariant = () => {
-        let tempKanji = CardData.kanji
-        setCardData({...CardData,
-            kanji: CardData.variants.length == 0 ? '' : CardData.variants.pop(),
-            variants: tempKanji == '' ? [...CardData.variants] : [...CardData.variants, tempKanji],
-        })
+    const addVariant = () => {
+        if (CardData.kanji !== '') {
+            setCardData({...CardData,
+                    variants: [...CardData.variants, CardData.kanji],
+                    kanji: '',
+                })
+        }
     }
 
-    const handleSubmit = (event: any) => {
+    const sendCard = async (data: CardData) => {
+        window.api.sendCard('add-card', data)
+    }
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        console.log("Submitting")
-        console.log(event)
-    }   
+        sendCard(CardData)
+    }
     
     return (
         <div className='card-container'> 
@@ -95,11 +99,11 @@ const InputCard = () => {
                     inputProps={{style: { textAlign: 'center' }}}
                     InputProps={{
                         startAdornment: ( <InputAdornment position='start'>
-                            <button className='card-btns' onClick={(event: any) => getPrevVariant()}>
-                                <SvgIcon component={ArrowBackIcon} />
+                            <button className='card-btns' onClick={(event: any) => addVariant()} type='button'>
+                                <SvgIcon component={AddIcon} />
                             </button></InputAdornment>),
                         endAdornment: ( <InputAdornment position='end'>
-                            <button className='card-btns' onClick={(event:any) => getNextVariant()}>
+                            <button className='card-btns' onClick={(event:any) => getNextVariant()} type='button'>
                                 <SvgIcon component={ArrowForwardIcon} />
                             </button></InputAdornment>),
                         style: { fontSize: '1.5rem'}
