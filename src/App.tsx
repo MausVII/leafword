@@ -6,6 +6,7 @@ import Header from './components/header/Header';
 import { LeafMode } from './models/models';
 import { ThemeProvider } from '@emotion/react';
 import InputCard from './components/input_card/InputCard';
+import SearchBar from './components/search_bar/SearchBar';
 
 const theme = createTheme({
     palette: {
@@ -24,7 +25,7 @@ const theme = createTheme({
 })
 
 const App = () => {
-    const [mode, setmode] = useState<LeafMode>("Add")
+    const [mode, setmode] = useState<LeafMode>("Card")
 
     return(
         <ThemeProvider theme={theme}>
@@ -32,6 +33,7 @@ const App = () => {
             <Header mode={mode} modeHandler={setmode}/>
             {mode == 'Card' ? <Card /> :
              mode == 'Add' ? <InputCard /> : 
+             mode == 'Browse' ? <SearchBar /> :
              ''}
             
         </div>

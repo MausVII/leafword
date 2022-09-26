@@ -23,26 +23,33 @@ const createWindow = (): void => {
     }
   });
 
-  const dbWindow = new BrowserWindow({
-    width: 400,
-    height: 300,
-    webPreferences: {
-      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-    }
-  })
+  // const dbWindow = new BrowserWindow({
+  //   width: 400,
+  //   height: 300,
+  //   webPreferences: {
+  //     preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+  //   }
+  // })
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-  dbWindow.loadURL(DB_WINDOW_WEBPACK_ENTRY);
+  // dbWindow.loadURL(DB_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
-  dbWindow.webContents.openDevTools()
+  // dbWindow.webContents.openDevTools()
 
-  ipcMain.on('add-card', (event: any, data: CardData) => {
-    console.log('Main received request to add card.')
-    dbWindow.webContents.send('add-card', data)
-  })
+  // ipcMain.on('add-card', (event: any, data: CardData) => {
+  //   console.log('Main received request to add card.')
+  //   db.insert(data, (error, doc) => {
+  //     if (error) {
+  //         console.error(`Error inserting card: ${error}`)
+  //     } else {
+  //         console.log(`Inserted: ${JSON.stringify(doc, null, 2)}`)
+  //     }
+  // })
+  // })
+
 }
 
 // This method will be called when Electron has finished

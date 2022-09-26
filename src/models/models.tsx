@@ -1,6 +1,7 @@
 export type LeafMode = "Card" | "Add" | "Browse" | "Filters" | "Settings" | "Help"
 
 export type CardData = {
+    _id?: string,
     kanji: string,
     variants: string[] | [],
     components: string[] | [],
@@ -11,8 +12,9 @@ export type CardData = {
     eng_def: string,
     jap_def: string,
     notes: string,
-    createdAt?: number,
-    updatedAt?: number,
+    createdAt?: Date,
+    updatedAt?: Date,
+    last_seen?: Date
 }
 
 // Rising, High, Falling, Low

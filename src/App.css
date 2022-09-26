@@ -34,6 +34,34 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    
+}
+
+.w-full {
+    width: 80%;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.white-container {
+    margin: 2rem;
+    padding: 2rem;
+
+    background-color: var(--base);
+}
+
+.container-row {
+    width: 100%;
+
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
 .type-2-btn {

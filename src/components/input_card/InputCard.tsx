@@ -21,15 +21,15 @@ const PriorityIconContainer = (props: IconContainerProps) => {
 
 const InputCard = () => {
     const [CardData, setCardData] = useState<CardData>({
-        kanji: '収益',
+        kanji: '',
         variants: [],
-        components: ['収', '益'],
-        tags: ['名'],
-        pitch: ['l', 'r', 'h', 'h', 'h'],
-        priority: 3,
-        hiragana: 'しゅうえき',
-        eng_def: "Earning, revenue",
-        jap_def: "事業などによって利益を得ること。また、その利益。",
+        components: [],
+        tags: [],
+        pitch: [],
+        priority: 0,
+        hiragana: '',
+        eng_def: "",
+        jap_def: "",
         notes: '',
     })
     const [lang, setLang] = useState<'eng' | 'jap'>('eng')
@@ -82,14 +82,14 @@ const InputCard = () => {
     }
 
     const sendCard = async (data: CardData) => {
-        console.log(`${[...CardData.kanji.split(''), ...CardData.variants.flat().toString().split('')]}`)
-        window.api.sendCard('add-card', {...data, 
-            createdAt: Date.now(), 
-            updatedAt: Date.now(),
+        window.api.insertCard({...data,
+            createdAt: new Date(),
+            updatedAt: new Date(),
             components: [...CardData.kanji.split(''), ...CardData.variants.flat().toString().split('')]
                         .filter(c => c.match(/[\u4e00-\u9faf]/) != null)
                         .filter((c, idx, self) => self.indexOf(c) === idx)
         })
+        setCardData({kanji: '', variants: [], components: [], tags: [], pitch: [], priority: 0, hiragana: '', eng_def: "", jap_def: "", notes: ''})
     }
     
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -120,8 +120,18 @@ const InputCard = () => {
                 <div className="tags">
                     <button className={`card-btns ${CardData.tags.includes('名詞') ? 'active' : ''}`}
                         onClick={handleTag} value='名詞'>名詞</button>
+                        {CardData.tags.includes('名詞') ? <button className={`card-btns ${CardData.tags.includes('スル') ? 'active' : ''}`}
+                            onClick={handleTag} value='スル'>スル</button> : <></>}
+
                     <button className={`card-btns ${CardData.tags.includes('動詞') ? 'active' : ''}`}
                         onClick={handleTag} value='動詞'>動詞</button>
+                        {CardData.tags.includes('動詞') ? <button className={`card-btns ${CardData.tags.includes('サ変') ? 'active' : ''}`}
+                            onClick={handleTag} value='サ変'>サ変</button> : <></>}
+                        {CardData.tags.includes('動詞') ? <button className={`card-btns ${CardData.tags.includes('五段活用') ? 'active' : ''}`}
+                            onClick={handleTag} value='五段活用'>五段活用</button> : <></>}
+                        {CardData.tags.includes('動詞') ? <button className={`card-btns ${CardData.tags.includes('一段活用') ? 'active' : ''}`}
+                            onClick={handleTag} value='一段活用'>一段活用</button> : <></>}
+
                     <button className={`card-btns ${CardData.tags.includes('形容詞') ? 'active' : ''}`}
                         onClick={handleTag} value='形容詞'>形容詞</button>
                     <button className={`card-btns ${CardData.tags.includes('副詞') ? 'active' : ''}`}
