@@ -3,7 +3,7 @@ import { createTheme } from '@mui/material';
 import './App.css'
 import Card from './components/card/Card';
 import Header from './components/header/Header';
-import { LeafMode } from './models/models';
+import { CardData, LeafMode } from './models/models';
 import { ThemeProvider } from '@emotion/react';
 import InputCard from './components/input_card/InputCard';
 import SearchBar from './components/search_bar/SearchBar';
@@ -25,14 +25,15 @@ const theme = createTheme({
 })
 
 const App = () => {
-    const [mode, setmode] = useState<LeafMode>("Card")
+    const [mode, setMode] = useState<LeafMode>("Card")
+    const [lastCard, setLastCard] = useState<CardData | null>(null)
 
     return(
         <ThemeProvider theme={theme}>
         <div className='app'>
-            <Header mode={mode} modeHandler={setmode}/>
-            {mode == 'Card' ? <Card /> :
-             mode == 'Add' ? <InputCard /> : 
+            <Header mode={mode} modeHandler={setMode}/>
+            {mode == 'Card' ? <Card setLastCard={setLastCard} setMode={setMode}/> :
+             mode == 'Add' ? <InputCard lastCard={lastCard}/> : 
              mode == 'Browse' ? <SearchBar /> :
              ''}
             

@@ -2,8 +2,6 @@ import { contextBridge, ipcRenderer } from "electron";
 import { CardData } from "./models/models";
 import DataStore from 'nedb'
 
-let cards_queue: CardData[] = []
-
 type queryData = {
     kanji?: object,
     tags?: object,
@@ -18,28 +16,6 @@ db.loadDatabase((error) => {
     } else {
         console.log("Loaded database")
     }
-})
-
-ipcRenderer.on('add-card', (event, card: CardData) => {
-    console.log('db received request to save card.')
-    db.insert(card, (error, doc) => {
-        if (error) {
-            console.error(`Error inserting card: ${error}`)
-        } else {
-            console.log(`Inserted: ${JSON.stringify(doc, null, 2)}`)
-        }
-    })
-})
-
-ipcRenderer.on('get-cards', (event) => {
-    console.log("Received get-cards message")
-    db.find({}, (error: any, docs: CardData[]) => {
-        if(error) {
-            console.error(error)
-        } else {
-            ipcRenderer.send('deliver-cards', docs)
-        }
-    })
 })
 
 contextBridge.exposeInMainWorld(

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, SyntheticEvent } from 'react'
+import React, { useState, useEffect, SyntheticEvent, SetStateAction, Dispatch } from 'react'
 import TextField from '@mui/material/TextField'
 import SvgIcon from '@mui/material/SvgIcon'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
@@ -7,6 +7,11 @@ import "./Card.css"
 import { CardData } from '../../models/models'
 import { Button, ButtonGroup, IconContainerProps, InputAdornment, Rating, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import { priorityIcons, StyledRating } from '../../models/mui_styles'
+
+type Props = {
+    setLastCard: Dispatch<SetStateAction<CardData>>
+    setMode: any
+}
 
 type PitchProps = {
     pitch: string[],
@@ -19,7 +24,7 @@ const PriorityIconContainer = (props: IconContainerProps) => {
     return <span {...other}>{priorityIcons[value].icon}</span>
 }
 
-const Card = () => {
+const Card = ({setLastCard, setMode}: Props) => {
     const [cards, setCards] = useState<CardData[]>([{
         _id: '',
         kanji: '',
@@ -35,13 +40,16 @@ const Card = () => {
     }])
     const [currCardIndex, setCurrCardIndex] = useState<number>(0)
 
-    const [flipState, setflipState] = useState<"front" | "back">("back")
+    const [flipState, setflipState] = useState<"front" | "back">("front")
     const [lang, setLang] = useState<"eng" | "jap">("eng")
     const [showNotes, setShowNotes] = useState<boolean>(false)
 
     useEffect(() => {
         window.api.getCards()
-        .then((results: CardData[] | []) => setCards(results))
+        .then((results: CardData[] | []) => {
+            setCards(results)
+            setLastCard(results[0])
+        })
     }, [])
 
     const flip = () => {
@@ -72,9 +80,12 @@ const Card = () => {
             .then((results: CardData[] | []) => {
                 setCards(results)
                 setCurrCardIndex(0)
+                
             })
         } else {
-            setCurrCardIndex(currCardIndex + 1);
+            let prevIndex = currCardIndex
+            setCurrCardIndex(prevIndex + 1);
+            setLastCard(cards[prevIndex + 1])
         }
     }
 
@@ -109,7 +120,7 @@ const Card = () => {
                 </div>
                 <div className="notes_lang">
                     <div className="notes">
-                        <button className={`card-btns ${showNotes === true ? "active" : ""}`}
+                        <button className={`card-btns ${showNotes === true ? "active" : ""}`} type="button"
                         onClick={(event) => setShowNotes(!showNotes)}>Notes</button>
                     </div>
 
@@ -124,15 +135,16 @@ const Card = () => {
                 <div className="definition">
                     <TextField id='definition' variant='outlined' multiline minRows={5} fullWidth
                     InputProps={{ readOnly: true }}
-                    value={showNotes ? cards[currCardIndex].notes : lang == 'eng' ? cards[currCardIndex].eng_def : cards[currCardIndex].jap_def}/>
+                    value={showNotes ? cards[currCardIndex].notes : lang == 'eng' ? cards[currCardIndex].eng_def : cards[currCardIndex].jap_def}
+                    placeholder={showNotes && cards[currCardIndex].notes === '' ? "There are no notes for this card. Edit the card to add some." : null}/>
                 </div>
 
                 <div className="priority">
                     <StyledRating name='priority' value={cards[currCardIndex].priority} precision={1} size='large' color='primary' IconContainerComponent={PriorityIconContainer}
                     onChange={updatePriority}/>
 
-                    <button className='card-btns big-btn' onClick={flip}>Flip</button>
-                    <button className='card-btns big-btn' onClick={handleNext}>Next</button>
+                    <button type="button" className='card-btns big-btn' onClick={() => setMode("Add")}>Edit</button>
+                    <button type="button" className='card-btns big-btn' onClick={handleNext}>Next</button>
                 </div>
 
             </form>

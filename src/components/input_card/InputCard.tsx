@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from 'react'
+import React, { SyntheticEvent, useEffect, useState } from 'react'
 import { CardData } from '../../models/models'
 import InputAdornment from '@mui/material/InputAdornment'
 import SvgIcon from '@mui/material/SvgIcon'
@@ -10,6 +10,10 @@ import { Pitch } from '../../models/models'
 import './InputCard.css'
 import { Button, ButtonGroup, IconContainerProps, Rating, ToggleButton, ToggleButtonGroup } from '@mui/material'
 
+type Props = {
+    lastCard: CardData
+}
+
 type PitchProp = {
     hiragana: string,
 }
@@ -19,7 +23,7 @@ const PriorityIconContainer = (props: IconContainerProps) => {
     return <span {...other}>{priorityIcons[value].icon}</span>
 }
 
-const InputCard = () => {
+const InputCard = ({lastCard}: Props) => {
     const [CardData, setCardData] = useState<CardData>({
         kanji: '',
         variants: [],
@@ -34,6 +38,12 @@ const InputCard = () => {
     })
     const [lang, setLang] = useState<'eng' | 'jap'>('eng')
     const [showNotes, setShowNotes] = useState<boolean>(false)
+
+    useEffect(() => {
+        if (lastCard !== null) {
+            setCardData(lastCard)
+        }
+    }, [])
 
     const PitchInput = ({hiragana}: PitchProp) => {
         return (
@@ -177,9 +187,9 @@ const InputCard = () => {
                     value={showNotes ? CardData.notes : lang == 'eng' ? CardData.eng_def : CardData.jap_def}/>
                 </div>
 
-                <pre>
+                {/* <pre>
                     {JSON.stringify(CardData, null, 2)}
-                </pre>
+                </pre> */}
 
                 <div className="priority">
                     <StyledRating name='priority' value={CardData.priority} 
