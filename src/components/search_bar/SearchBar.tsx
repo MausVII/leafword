@@ -4,6 +4,7 @@ import { InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui
 import { priorityIcons, StyledRating, StyledToggleButton } from '../../models/mui_styles'
 import { Button, ButtonGroup, IconContainerProps, Rating, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import { CardData } from '../../models/models'
+import "./Search.css"
 import DisplayResults from './DisplayResults'
 
 const PriorityIconContainer = (props: IconContainerProps) => {

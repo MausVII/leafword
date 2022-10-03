@@ -9,9 +9,9 @@ type Props = {
 
 const DisplayResults = ({cards}: Props ) => {
   return (
-    <div className='flex-container w-full white-container'>
+    <div className='results-container flex-container w-full white-container'>
         {cards.map( card => 
-            <details key={card._id}>
+            <details key={card._id} className="search-result">
                 <summary>{card.kanji} {card.tags.reduce((acc, curr) => acc + `[${curr}] `, '').trim()}</summary>
                 <div>
                     <div className='pitch'>

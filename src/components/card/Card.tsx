@@ -5,7 +5,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import "./Card.css"
 import { CardData } from '../../models/models'
-import { Button, ButtonGroup, IconContainerProps, InputAdornment, Rating, ToggleButton, ToggleButtonGroup } from '@mui/material'
+import { IconContainerProps, InputAdornment } from '@mui/material'
 import { priorityIcons, StyledRating } from '../../models/mui_styles'
 
 type Props = {
@@ -48,7 +48,6 @@ const Card = ({setLastCard, setMode}: Props) => {
         window.api.getCards()
         .then((results: CardData[] | []) => {
             setCards(results)
-            setLastCard(results[0])
         })
     }, [])
 
@@ -71,21 +70,25 @@ const Card = ({setLastCard, setMode}: Props) => {
         window.api.getCards()
         .then((results: CardData[] | []) => setCards(results))
     }
+
+    const handleEdit = () => {
+        setLastCard(cards[currCardIndex])
+        setMode('Add')
+    }
     
     const handleNext = (e: any) => {
         e.preventDefault()
+        flip()
         window.api.updateLastSeen(cards[currCardIndex]._id, new Date())
         if(currCardIndex == cards.length - 1) {
             window.api.getCards()
             .then((results: CardData[] | []) => {
                 setCards(results)
                 setCurrCardIndex(0)
-                
             })
         } else {
             let prevIndex = currCardIndex
-            setCurrCardIndex(prevIndex + 1);
-            setLastCard(cards[prevIndex + 1])
+            setCurrCardIndex(prevIndex + 1)
         }
     }
 
@@ -143,7 +146,7 @@ const Card = ({setLastCard, setMode}: Props) => {
                     <StyledRating name='priority' value={cards[currCardIndex].priority} precision={1} size='large' color='primary' IconContainerComponent={PriorityIconContainer}
                     onChange={updatePriority}/>
 
-                    <button type="button" className='card-btns big-btn' onClick={() => setMode("Add")}>Edit</button>
+                    <button type="button" className='card-btns big-btn' onClick={handleEdit}>Edit</button>
                     <button type="button" className='card-btns big-btn' onClick={handleNext}>Next</button>
                 </div>
 
@@ -155,7 +158,7 @@ const Card = ({setLastCard, setMode}: Props) => {
     return (
         <div className='card-container'>
             <div className={`card-front ${flipState === "front" ? "active" : ""}`}>
-                <h1>{cards[currCardIndex].kanji}</h1>
+                <h1 className='front-kanji'>{cards[currCardIndex].kanji}</h1>
                 <button className='type-2-btn' onClick={flip}>Flip</button>
             </div>
 

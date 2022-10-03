@@ -11,7 +11,8 @@ import './InputCard.css'
 import { Button, ButtonGroup, IconContainerProps, Rating, ToggleButton, ToggleButtonGroup } from '@mui/material'
 
 type Props = {
-    lastCard: CardData
+    lastCard: CardData,
+    setLastCard: any
 }
 
 type PitchProp = {
@@ -23,7 +24,7 @@ const PriorityIconContainer = (props: IconContainerProps) => {
     return <span {...other}>{priorityIcons[value].icon}</span>
 }
 
-const InputCard = ({lastCard}: Props) => {
+const InputCard = ({lastCard, setLastCard}: Props) => {
     const [CardData, setCardData] = useState<CardData>({
         kanji: '',
         variants: [],
@@ -100,6 +101,22 @@ const InputCard = ({lastCard}: Props) => {
                         .filter((c, idx, self) => self.indexOf(c) === idx)
         })
         setCardData({kanji: '', variants: [], components: [], tags: [], pitch: [], priority: 0, hiragana: '', eng_def: "", jap_def: "", notes: ''})
+    }
+
+    const handleClear = () => {
+        setLastCard(null)
+        setCardData({
+            kanji: '',
+            variants: [],
+            components: [],
+            tags: [],
+            pitch: [],
+            priority: 0,
+            hiragana: '',
+            eng_def: "",
+            jap_def: "",
+            notes: '',
+        })
     }
     
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -198,7 +215,9 @@ const InputCard = ({lastCard}: Props) => {
                         setCardData({...CardData, priority: parseInt(target.value)})
                     }}
                     precision={1} size='large' color='primary' IconContainerComponent={PriorityIconContainer}/>
-                    <button className='card-btns big-btn' type='submit'>Create</button>
+
+                    <button className='card-btns big-btn' onClick={handleClear} type='button'>Clear</button>
+                    <button className='card-btns big-btn' type='submit'>{ lastCard === null ? "Create" : "Update"}</button>
                 </div>
             </form>
         </div>

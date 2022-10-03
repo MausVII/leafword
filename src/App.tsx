@@ -33,7 +33,7 @@ const App = () => {
         <div className='app'>
             <Header mode={mode} modeHandler={setMode}/>
             {mode == 'Card' ? <Card setLastCard={setLastCard} setMode={setMode}/> :
-             mode == 'Add' ? <InputCard lastCard={lastCard}/> : 
+             mode == 'Add' ? <InputCard lastCard={lastCard} setLastCard={setLastCard}/> : 
              mode == 'Browse' ? <SearchBar /> :
              ''}
             

@@ -16,39 +16,19 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    height: 600,
+    height: 800,
     width: 800,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-    }
+    },
+    resizable: false,
   });
-
-  // const dbWindow = new BrowserWindow({
-  //   width: 400,
-  //   height: 300,
-  //   webPreferences: {
-  //     preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-  //   }
-  // })
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-  // dbWindow.loadURL(DB_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
-  // dbWindow.webContents.openDevTools()
-
-  // ipcMain.on('add-card', (event: any, data: CardData) => {
-  //   console.log('Main received request to add card.')
-  //   db.insert(data, (error, doc) => {
-  //     if (error) {
-  //         console.error(`Error inserting card: ${error}`)
-  //     } else {
-  //         console.log(`Inserted: ${JSON.stringify(doc, null, 2)}`)
-  //     }
-  // })
-  // })
 
 }
 

@@ -1,3 +1,9 @@
 .search-result {
-    
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+}
+
+.results-container {
+    height: 500px;
+    overflow-y: scroll;
 }

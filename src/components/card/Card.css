@@ -36,6 +36,11 @@
     left: -100%;
 }
 
+.front-kanji {
+    font-size: 4rem;
+    writing-mode: vertical-lr;
+}
+
 .card-front.active {
     left: 0;
 }

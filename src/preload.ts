@@ -23,14 +23,14 @@ contextBridge.exposeInMainWorld(
     {
         getCards: () => {
             return new Promise((resolve, reject) => {
-                db.find({}).exec((error, result) => {
+                db.find({}).sort({ recall_idx: -1}).exec((error, result) => {
                     if (error !== null) reject(error)
                     else resolve(result) 
                 })
             })
         },
         insertCard: (card: CardData) => {
-            db.insert(card, (err, doc) => {
+            db.insert({...card, recall_idx: Number.MAX_VALUE}, (err, doc) => {
                 if (err) {
                     console.error(`Error inserting card: ${err}`)
                     return
@@ -43,8 +43,17 @@ contextBridge.exposeInMainWorld(
             db.update({ _id: id }, { $set: { priority: prio } })
         },
         updateLastSeen: (id: string, new_date: Date) => {
-            db.update({ _id: id}, { $set: { last_seen: new_date}}, {returnUpdatedDocs: true}, (err, numUpdated, docs) => {
-                console.log(JSON.stringify(docs, null, 2))
+            db.findOne({_id: id}, (err, result) => {
+                if (err) console.error(err)
+                // Days since card has been seen <- 1000 * 60 * 60 * 24
+                let date_diff = (new_date.getTime() - result.last_seen.getTime()) / 86400000
+                
+                let recall_idx = date_diff * Math.log10(result.priority + 1)
+                // Due to how big this numbers can get, counter measure to avoid Number.infinity
+                recall_idx = recall_idx > Number.MAX_VALUE ? Number.MAX_VALUE : recall_idx
+                db.update({ _id: id}, { $set: { last_seen: new_date, recall_idx: recall_idx} }, {returnUpdatedDocs: true}, (err, numUpdated, docs) => {
+                    console.log(JSON.stringify(docs, null, 2))
+                })
             })
         },
         searchCards: (keyword: string, category: string, priority: number) => {
