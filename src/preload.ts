@@ -48,7 +48,7 @@ contextBridge.exposeInMainWorld(
             })
         },
         insertCard: (card: CardData) => {
-            db.insert({...card, recall_idx: Number.MAX_VALUE}, (err, doc) => {
+            db.insert(card, (err, doc) => {
                 if (err) {
                     console.error(`Error inserting card: ${err}`)
                     return
@@ -57,22 +57,20 @@ contextBridge.exposeInMainWorld(
                 console.log(`Inserted: ${JSON.stringify(doc, null, 2)}`)
             })
         },
-        // updatePriority: (id: string, prio: number) => {
-        //     db.update({ _id: id }, { $set: { priority: prio } })
-        // },
+        updateCard: (card: CardData) => {
+            db.update({ _id: card._id }, card)
+        },
         updateLastSeen: (id: string, new_date: Date, prio: number) => {
             db.findOne({_id: id}, (err, result) => {
                 if (err) console.error(err)
                 // prio_diff range = -5 >= x >= 5
                 let prio_diff = -(result.priority - prio)
-                // (prio_diff + 10) Range: 5 <= x <= 15
-                // normalized_prio_factor Range: 0.5 <= x <= 1.5
-                let normalized_prio_factor = (prio_diff + 10) / 10
-                // worst case, recall_idx increases by 50%, best case it's halved
+                // (prio_diff + 10) Range: 1 <= x <= 11
+                // normalized_prio_factor Range: 0.1 <= x <= 1.1
+                let normalized_prio_factor = (prio_diff + 6) / 10
+                // worst case, recall_idx increases by 10%, best case it's 1/10
                 let recall_idx = result.recall_idx * normalized_prio_factor
 
-                console.log(`Days since last seen: ${result.last_seen / 1000 / 60 /60 / 24}`)
-                console.log(`Prio: ${prio}.\nPrio_diff: ${prio_diff}.\nNormalized_prio_factor: ${normalized_prio_factor}.\nRecall_idx: ${recall_idx}`)
                 db.update({ _id: id}, { $set: { last_seen: new_date, recall_idx: recall_idx, priority: prio} }, {returnUpdatedDocs: true}, (err, numUpdated, docs) => {
                     console.log(JSON.stringify(docs, null, 2))
                 })

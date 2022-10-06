@@ -106,6 +106,7 @@ const InputCard = ({lastCard, setLastCard}: Props) => {
     const handleClear = () => {
         setLastCard(null)
         setCardData({
+            _id: '',
             kanji: '',
             variants: [],
             components: [],
@@ -121,7 +122,18 @@ const InputCard = ({lastCard, setLastCard}: Props) => {
     
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        sendCard(CardData)
+        if(CardData._id === '') {
+            sendCard(CardData)
+        } else {
+            window.api.updateCard({...CardData,
+                updatedAt: new Date(),
+                components: [...CardData.kanji.split(''), ...CardData.variants.flat().toString().split('')]
+                            .filter(c => c.match(/[\u4e00-\u9faf]/) != null)
+                            .filter((c, idx, self) => self.indexOf(c) === idx)
+            })
+            setCardData({kanji: '', variants: [], components: [], tags: [], pitch: [], priority: 0, hiragana: '', eng_def: "", jap_def: "", notes: ''})
+
+        }
     }
     
     return (
