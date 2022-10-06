@@ -14,7 +14,25 @@ db.loadDatabase((error) => {
     if (error) {
         console.error(`Could not load database ${error}`)
     } else {
-        console.log("Loaded database")
+        db.find({}, (err: Error, results: CardData[]) => {
+            for (const card of results) {
+                let days_since = new Date().getTime() - card.last_seen.getTime()
+                days_since = days_since / 1000 / 60 / 60 / 24
+
+                // Taper off really large numbers
+                // 100 days since last seen = 10
+                let last_seen_factor = Math.sqrt(days_since)
+                // normalizes priority -> Domain: 0 <= x <= 5 | Range: 1 <= x <= 2
+                let priority_factor = (card.priority / 6) + 1
+                // increase recall_idx based on days not seen
+                // increased exponentially by priority
+                let recall_idx = Math.pow(last_seen_factor, priority_factor)
+
+                db.update({_id: card._id}, {$set: {recall_idx: recall_idx}})
+            }
+        })
+
+        console.log("Database loaded.")
     }
 })
 
@@ -39,19 +57,23 @@ contextBridge.exposeInMainWorld(
                 console.log(`Inserted: ${JSON.stringify(doc, null, 2)}`)
             })
         },
-        updatePriority: (id: string, prio: number) => {
-            db.update({ _id: id }, { $set: { priority: prio } })
-        },
-        updateLastSeen: (id: string, new_date: Date) => {
+        // updatePriority: (id: string, prio: number) => {
+        //     db.update({ _id: id }, { $set: { priority: prio } })
+        // },
+        updateLastSeen: (id: string, new_date: Date, prio: number) => {
             db.findOne({_id: id}, (err, result) => {
                 if (err) console.error(err)
-                // Days since card has been seen <- 1000 * 60 * 60 * 24
-                let date_diff = (new_date.getTime() - result.last_seen.getTime()) / 86400000
-                
-                let recall_idx = date_diff * Math.log10(result.priority + 1)
-                // Due to how big this numbers can get, counter measure to avoid Number.infinity
-                recall_idx = recall_idx > Number.MAX_VALUE ? Number.MAX_VALUE : recall_idx
-                db.update({ _id: id}, { $set: { last_seen: new_date, recall_idx: recall_idx} }, {returnUpdatedDocs: true}, (err, numUpdated, docs) => {
+                // prio_diff range = -5 >= x >= 5
+                let prio_diff = -(result.priority - prio)
+                // (prio_diff + 10) Range: 5 <= x <= 15
+                // normalized_prio_factor Range: 0.5 <= x <= 1.5
+                let normalized_prio_factor = (prio_diff + 10) / 10
+                // worst case, recall_idx increases by 50%, best case it's halved
+                let recall_idx = result.recall_idx * normalized_prio_factor
+
+                console.log(`Days since last seen: ${result.last_seen / 1000 / 60 /60 / 24}`)
+                console.log(`Prio: ${prio}.\nPrio_diff: ${prio_diff}.\nNormalized_prio_factor: ${normalized_prio_factor}.\nRecall_idx: ${recall_idx}`)
+                db.update({ _id: id}, { $set: { last_seen: new_date, recall_idx: recall_idx, priority: prio} }, {returnUpdatedDocs: true}, (err, numUpdated, docs) => {
                     console.log(JSON.stringify(docs, null, 2))
                 })
             })
@@ -71,6 +93,10 @@ contextBridge.exposeInMainWorld(
                     else resolve(result)
                 })
             })
+        },
+        cleanDatabase: () => {
+            console.log('Compacting db file.')
+            db.persistence.compactDatafile()
         }
     },
 )

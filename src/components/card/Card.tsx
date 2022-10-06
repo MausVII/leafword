@@ -39,7 +39,7 @@ const Card = ({setLastCard, setMode}: Props) => {
         notes: ''
     }])
     const [currCardIndex, setCurrCardIndex] = useState<number>(0)
-
+    const [prio, setPrio] = useState(0)
     const [flipState, setflipState] = useState<"front" | "back">("front")
     const [lang, setLang] = useState<"eng" | "jap">("eng")
     const [showNotes, setShowNotes] = useState<boolean>(false)
@@ -48,6 +48,7 @@ const Card = ({setLastCard, setMode}: Props) => {
         window.api.getCards()
         .then((results: CardData[] | []) => {
             setCards(results)
+            setPrio(results[0].priority)
         })
     }, [])
 
@@ -64,11 +65,7 @@ const Card = ({setLastCard, setMode}: Props) => {
     const formatTags = (tags: string[]) => tags.reduce( (acc, curr) => acc + ` [${curr}]`, '')
 
     const updatePriority = (e: any) => {
-        let newPrio = parseInt(e.target.value)
-        window.api.updatePriority(cards[currCardIndex]._id, newPrio)
-
-        window.api.getCards()
-        .then((results: CardData[] | []) => setCards(results))
+        setPrio(parseInt(e.target.value))
     }
 
     const handleEdit = () => {
@@ -79,16 +76,18 @@ const Card = ({setLastCard, setMode}: Props) => {
     const handleNext = (e: any) => {
         e.preventDefault()
         flip()
-        window.api.updateLastSeen(cards[currCardIndex]._id, new Date())
+        window.api.updateLastSeen(cards[currCardIndex]._id, new Date(), prio)
         if(currCardIndex == cards.length - 1) {
             window.api.getCards()
             .then((results: CardData[] | []) => {
                 setCards(results)
                 setCurrCardIndex(0)
+                setPrio(results[0].priority)
             })
         } else {
             let prevIndex = currCardIndex
             setCurrCardIndex(prevIndex + 1)
+            setPrio(cards[prevIndex + 1].priority)
         }
     }
 
@@ -143,7 +142,7 @@ const Card = ({setLastCard, setMode}: Props) => {
                 </div>
 
                 <div className="priority">
-                    <StyledRating name='priority' value={cards[currCardIndex].priority} precision={1} size='large' color='primary' IconContainerComponent={PriorityIconContainer}
+                    <StyledRating name='priority' value={prio} precision={1} size='large' color='primary' IconContainerComponent={PriorityIconContainer}
                     onChange={updatePriority}/>
 
                     <button type="button" className='card-btns big-btn' onClick={handleEdit}>Edit</button>
