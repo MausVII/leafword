@@ -16,8 +16,7 @@ db.loadDatabase((error) => {
     } else {
         db.find({}, (err: Error, results: CardData[]) => {
             for (const card of results) {
-                let days_since = new Date().getTime() - card.last_seen.getTime()
-                days_since = days_since / 1000 / 60 / 60 / 24
+                let days_since = daysBetween(card.last_seen, new Date())
 
                 // Taper off really large numbers
                 // 100 days since last seen = 10
@@ -35,6 +34,7 @@ db.loadDatabase((error) => {
         console.log("Database loaded.")
     }
 })
+
 
 contextBridge.exposeInMainWorld(
     'api',
@@ -93,14 +93,21 @@ contextBridge.exposeInMainWorld(
                     else resolve(result)
                 })
             })
-        },
-        cleanDatabase: () => {
-            console.log('Compacting db file.')
-            db.persistence.compactDatafile()
         }
     },
 )
 
+function daysBetween(startDate: Date, endDate: Date) {
+    const millisecondsPerDay = 1000 * 60 * 60 * 24
+    return (treatAsUTC(endDate).getTime() - treatAsUTC(startDate).getTime()) / millisecondsPerDay
+}
+
+// Helper function to handle daylight saving time transitions
+function treatAsUTC(date: Date) {
+    const result = new Date(date)
+    result.setMinutes(result.getMinutes() - result.getTimezoneOffset())    
+    return result
+}
 
 
 

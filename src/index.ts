@@ -46,9 +46,7 @@ app.on('window-all-closed', () => {
   }
 });
 
-// app.on('before-quit', () => {
-//   window.api.cleanDatabase()
-// })
+
 
 app.on('activate', () => {
   // On OS X it's common to re-create a window in the app when the
